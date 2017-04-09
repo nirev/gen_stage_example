@@ -7,7 +7,9 @@ defmodule X.Numbers do
 
   # Callbacks
   def init(state) do
-    {:producer, state, dispatcher: GenStage.BroadcastDispatcher}
+    opts = [dispatcher: GenStage.BroadcastDispatcher,
+            demand: :accumulate]
+    {:producer, state, opts}
   end
 
   def handle_demand(demand, state) do

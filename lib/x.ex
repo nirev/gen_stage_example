@@ -16,6 +16,11 @@ defmodule X do
     ]
 
     opts = [strategy: :one_for_one, name: X.Supervisor]
-    Supervisor.start_link(producers ++ consumers, opts)
+    with {:ok, pid} <- Supervisor.start_link(producers ++ consumers, opts),
+         # this is done to synchronize consumers
+         # see https://hexdocs.pm/gen_stage/GenStage.html#demand/2
+         :ok <- GenStage.demand(X.Numbers, :forward) do
+      {:ok, pid}
+    end
   end
 end

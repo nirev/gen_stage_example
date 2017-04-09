@@ -7,7 +7,8 @@ defmodule X.Echo do
 
   # Callbacks
   def init(state) do
-    {:consumer, state, subscribe_to: [X.Numbers]}
+    {:consumer, state,
+     subscribe_to: [{X.Numbers, min_demand: 5, max_demand: 10}]}
   end
 
   def handle_events(events, _from, state) do

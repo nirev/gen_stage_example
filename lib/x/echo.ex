@@ -25,6 +25,6 @@ defmodule X.Echo do
   end
 
   defp print(text, color) do
-    IO.puts color <> text <> IO.ANSI.default_color
+    IO.puts color <> text <> IO.ANSI.default_color <> IO.ANSI.default_background
   end
 end

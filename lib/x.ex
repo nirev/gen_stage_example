@@ -10,10 +10,13 @@ defmodule X do
       worker(X.Numbers, [0])
     ]
 
-    consumers = [
-      worker(X.Echo, [IO.ANSI.green], id: 1),
-      worker(X.Echo, [IO.ANSI.yellow], id: 2)
-    ]
+    # System.schedulers_online gives us the numbers of schedulers
+    # as consumers may wait for IO or other stuff, this number * 2
+    # seems like a good number of workers :)
+    consumers =
+      for id <- 1..(System.schedulers_online * 2) do
+        worker(X.Echo, [color(id)], id: id)
+      end
 
     opts = [strategy: :one_for_one, name: X.Supervisor]
     with {:ok, pid} <- Supervisor.start_link(producers ++ consumers, opts),
@@ -22,5 +25,21 @@ defmodule X do
          :ok <- GenStage.demand(X.Numbers, :forward) do
       {:ok, pid}
     end
+  end
+
+  defp color(id) do
+    [ IO.ANSI.green,
+      IO.ANSI.yellow,
+      IO.ANSI.cyan,
+      IO.ANSI.magenta,
+      IO.ANSI.yellow_background <> IO.ANSI.black,
+      IO.ANSI.yellow_background <> IO.ANSI.red,
+      IO.ANSI.yellow_background <> IO.ANSI.magenta,
+      IO.ANSI.yellow_background <> IO.ANSI.blue,
+      IO.ANSI.white_background <> IO.ANSI.black,
+      IO.ANSI.white_background <> IO.ANSI.red,
+      IO.ANSI.white_background <> IO.ANSI.magenta,
+      IO.ANSI.white_background <> IO.ANSI.blue,
+    ] |> Enum.at(id - 1, IO.ANSI.default_color)
   end
 end

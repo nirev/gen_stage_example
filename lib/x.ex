@@ -8,7 +8,8 @@ defmodule X do
 
     producers = [
       worker(X.Numbers, [0]),
-      worker(X.Mul, [2])
+      worker(X.Mul, [2], id: :mul1),
+      worker(X.Mul, [10], id: :mul2)
     ]
 
     # System.schedulers_online gives us the numbers of schedulers

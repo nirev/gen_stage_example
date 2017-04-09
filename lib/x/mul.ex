@@ -2,7 +2,8 @@ defmodule X.Mul do
   use GenStage
 
   def start_link(factor) do
-    GenStage.start_link(__MODULE__, factor, name: __MODULE__)
+    GenStage.start_link(__MODULE__, factor,
+      name: :"mul#{factor}") # names have to be unique!
   end
 
   # Callbacks

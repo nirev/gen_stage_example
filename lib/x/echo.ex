@@ -1,24 +1,30 @@
 defmodule X.Echo do
   use GenStage
 
-  def start_link do
-    GenStage.start_link(__MODULE__, :whatever)
+  def start_link(color) do
+    GenStage.start_link(__MODULE__, color)
   end
 
   # Callbacks
-  def init(state) do
-    {:consumer, state,
+  def init(color) do
+    {:consumer, color,
      subscribe_to: [{X.Numbers, min_demand: 5, max_demand: 10}]}
   end
 
-  def handle_events(events, _from, state) do
+  def handle_events(events, _from, color) do
     for event <- events do
-      IO.inspect {self(), event}
+      {self(), event}
+      |> inspect()
+      |> print(color)
     end
 
     # Consumers don't emit events
     # but the return tuple is consistent
     events = []
-    {:noreply, events, state}
+    {:noreply, events, color}
+  end
+
+  defp print(text, color) do
+    IO.puts color <> text <> IO.ANSI.default_color
   end
 end

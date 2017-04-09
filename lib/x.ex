@@ -11,7 +11,8 @@ defmodule X do
     ]
 
     consumers = [
-      worker(X.Echo, [])
+      worker(X.Echo, [IO.ANSI.green], id: 1),
+      worker(X.Echo, [IO.ANSI.yellow], id: 2)
     ]
 
     opts = [strategy: :one_for_one, name: X.Supervisor]

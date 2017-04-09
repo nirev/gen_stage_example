@@ -8,7 +8,7 @@ defmodule X.Echo do
   # Callbacks
   def init(color) do
     {:consumer, color,
-     subscribe_to: [{X.Numbers, min_demand: 5, max_demand: 10}]}
+     subscribe_to: [{X.Mul, min_demand: 5, max_demand: 10}]}
   end
 
   def handle_events(events, _from, color) do

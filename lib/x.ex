@@ -7,7 +7,8 @@ defmodule X do
     import Supervisor.Spec, warn: false
 
     producers = [
-      worker(X.Numbers, [0])
+      worker(X.Numbers, [0]),
+      worker(X.Mul, [2])
     ]
 
     # System.schedulers_online gives us the numbers of schedulers
@@ -19,7 +20,8 @@ defmodule X do
       end
 
     opts = [strategy: :one_for_one, name: X.Supervisor]
-    with {:ok, pid} <- Supervisor.start_link(producers ++ consumers, opts),
+    children = producers ++ consumers
+    with {:ok, pid} <- Supervisor.start_link(children, opts),
          # this is done to synchronize consumers
          # see https://hexdocs.pm/gen_stage/GenStage.html#demand/2
          :ok <- GenStage.demand(X.Numbers, :forward) do
